@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGalerija GM - Gabrijela Mamić</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom right, #f9f6f1, #f2e7dc);
+            color: #4b3b30;
+            line-height: 1.6;
+        }
+
+        /* NAVIGACIJA - HEADER KOJI SE SKLANJA */
+        header {
+            background-color: rgba(255, 241, 230, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        header.hidden {
+            transform: translateY(-100%);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-wrap: wrap;
+        }
+
+        nav .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        nav .logo img {
+            height: 150px;
+            width: auto;
+            transition: scaleX(4.5);
+        }
+
+        nav .logo img:hover {
+            transform: scale(1.85);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 35px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: #7c5b46;
+            font-weight: 500;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        nav ul li a:hover {
+            color: #d19a6e;
+        }
+
+        .language-switcher {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .language-switcher img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .language-switcher img:hover {
+            transform: scale(1.15);
+            border-color: #c58b6c;
+        }
+
+        .language-switcher img.active {
+            border-color: #c58b6c;
+            box-shadow: 0 0 8px rgba(197, 139, 108, 0.4);
+        }
+
+        /* DODAJ MARGIN ZA FIXED HEADER */
+        main {
+            margin-top: 100px;
+        }
+
+        /* SEKCIJE */
+        section {
+            display: none;
+            padding: 60px 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        section h1, section h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #9b7258;
+            font-family: 'Playfair Display', serif;
+        }
+
+        section h1 {
+            font-size: 3rem;
+            color: #b5838d;
+        }
+
+        /* POČETNA */
+        #pocetna {
+            text-align: center;
+            padding: 80px 20px;
+            max-width: 100%;
+        }
+
+        #pocetna > p {
+            font-size: 1.1rem;
+            color: #6d6875;
+            max-width: 800px;
+            margin: 20px auto;
+            line-height: 1.8;
+        }
+
+        /* TRAKA ZA PRETRAŽIVANJE */
+        .search-hero {
+            background: #fff9f3;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .search-container {
+            display: flex;
+            background: white;
+            border-radius: 50px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        #search-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+        }
+
+        .search-btn {
+            background: #c58b6c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .search-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 0 10px;
+        }
+
+        .clear-search {
+            background: none;
+            border: none;
+            color: #c58b6c;
+            cursor: pointer;
+        }
+
+        /* KALENDAR DOGAĐAJA */
+        .events-hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 60px 20px;
+            margin: 60px 0;
+        }
+
+        .events-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .events-container h2 {
+            color: white;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .events-subtitle {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .event-date {
+            background: #c58b6c;
+            color: white;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .event-day {
+            font-size: 2rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .event-month {
+            font-size: 1rem;
+            display: block;
+        }
+
+        .event-content {
+            flex: 1;
+        }
+
+        .event-content h3 {
+            color: #7c5b46;
+            margin-bottom: 10px;
+        }
+
+        .event-location, .event-time {
+            color: #9b7258;
+            margin-bottom: 5px;
+        }
+
+        .event-btn {
+            background: #c58b6c;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* FOOTER NA POČETNOJ STRANICI */
+        .homepage-footer {
+            margin-top: 80px;
+            padding: 40px 20px;
+            background: rgba(255, 241, 230, 0.7);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .homepage-footer h3 {
+            color: #9b7258;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .homepage-social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 15px;
+        }
+
+        .homepage-social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .homepage-social-icons a img {
+            width: 45px;
+            height: 45px;
+            transition: transform 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .homepage-social-icons a:hover img {
+            transform: scale(1.2);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        /* PARALLAX SEKCIJE */
+        .parallax-section {
+            position: relative;
+            height: 100vh;
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 80px 0;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+        }
+
+        .parallax-overlay {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 60px 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .parallax-overlay h2 {
+            color: white;
+            font-size: 3rem;
+            font-family: 'Playfair Display', serif;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+            margin: 0;
+        }
+
+        /* SADRŽAJ IZMEĐU PARALLAX SEKCIJA */
+        .content-section {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 60px 40px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .content-section h2 {
+            color: #9b7258;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .content-section p {
+            color: #6b564a;
+            font-size: 1.2rem;
+            line-height: 2;
+        }
+
+        /* VIDEO SEKCIJA */
+        .video-section {
+            position: relative;
+            height: 80vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 80px 0;
+            overflow: hidden;
+            width: 100vw;
+            margin-left: calc(-50vw + 50%);
+        }
+
+        .video-section video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+        }
+
+        .video-overlay {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 60px 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            max-width: 800px;
+        }
+
+        .video-overlay h2 {
+            color: white;
+            font-size: 3rem;
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .video-overlay p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.3rem;
+        }
+
+        /* GALERIJA */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background-color: #fffdf8;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            height: 300px;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            padding: 15px;
+            color: white;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover .gallery-item-overlay {
+            transform: translateY(0);
+        }
+
+        .gallery-item-overlay h3 {
+            font-size: 1rem;
+            margin-bottom: 5px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .gallery-item-overlay p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        /* LIGHTBOX */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox-wrapper {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        .lightbox-image-container {
+            flex: 1;
+            max-width: 60%;
+        }
+
+        .lightbox-img {
+            width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        .lightbox-details {
+            flex: 1;
+            color: #fff;
+            max-width: 40%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 12px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .lightbox-details h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #f5d4c1;
+        }
+
+        .detail-row {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-row:last-of-type {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #d4a88c;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #f5d4c1;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .status-available {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .status-sold {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .status-reserved {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        .lightbox .close {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            font-size: 3rem;
+            color: #fff;
+            cursor: pointer;
+            z-index: 10001;
+            transition: transform 0.3s;
+        }
+
+        .lightbox .close:hover {
+            transform: scale(1.2);
+        }
+
+        .buy-btn {
+            width: 100%;
+            padding: 15px 30px;
+            background-color: #c58b6c;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .buy-btn:hover {
+            background-color: #a66d52;
+            transform: scale(1.05);
+        }
+
+        .buy-btn:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .purchase-form {
+            display: none;
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .purchase-form.active {
+            display: block;
+        }
+
+        .purchase-form h3 {
+            margin-bottom: 15px;
+            color: #7c5b46;
+            text-align: center;
+        }
+
+        .purchase-form input,
+        .purchase-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #d8c4b4;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .purchase-form button {
+            width: 100%;
+            padding: 12px;
+            background-color: #c58b6c;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .purchase-form button:hover {
+            background-color: #a66d52;
+        }
+
+        /* O MENI & KONTAKT */
+        #omeni p, #kontakt p {
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            text-align: center;
+            color: #6b564a;
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        .contact-info {
+            max-width: 600px;
+            margin: 30px auto;
+            text-align: center;
+        }
+
+        .contact-info p {
+            margin: 10px 0;
+            font-size: 1.1rem;
+        }
+
+        .social-icons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .social-icons a img {
+            width: 50px;
+            height: 50px;
+            transition: transform 0.3s;
+        }
+
+        .social-icons a:hover img {
+            transform: scale(1.2);
+        }
+
+        /* KOMENTARI */
+        .comment-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .comment-form {
+            background-color: #fff9f3;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+
+        .comment-form input,
+        .comment-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #d8c4b4;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .comment-form button {
+            padding: 12px 25px;
+            background-color: #c58b6c;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .comment-form button:hover {
+            background-color: #a66d52;
+            transform: scale(1.05);
+        }
+
+        .comment-box {
+            background-color: #fff9f3;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+
+        .comment {
+            padding: 15px;
+            margin-bottom: 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #c58b6c;
+        }
+
+        .comment strong {
+            color: #a8715a;
+        }
+
+        /* HIDDEN KLASA ZA NETLIFY FORME */
+        .hidden {
+            display: none;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 968px) {
+            .lightbox-wrapper {
+                flex-direction: column;
+            }
+
+            .lightbox-image-container,
+            .lightbox-details {
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            section h1 {
+                font-size: 2rem;
+            }
+
+            .gallery {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .lightbox-details h2 {
+                font-size: 1.5rem;
+            }
+
+            .price-tag {
+                font-size: 1.5rem;
+            }
+
+            /* Parallax na mobilnim */
+            .parallax-section {
+                background-attachment: scroll;
+                height: 60vh;
+            }
+
+            .parallax-overlay h2 {
+                font-size: 2rem;
+            }
+
+            .content-section {
+                margin: 40px 20px;
+                padding: 40px 20px;
+            }
+
+            .content-section h2 {
+                font-size: 1.8rem;
+            }
+
+            .video-section {
+                height: 50vh;
+            }
+
+            .video-overlay h2 {
+                font-size: 2rem;
+            }
+
+            .video-overlay p {
+                font-size: 1.1rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                border-radius: 0 0 20px 20px;
+                margin-top: 5px;
+            }
+            
+            .event-card {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .homepage-social-icons {
+                gap: 15px;
+            }
+            
+            .homepage-social-icons a img {
+                width: 40px;
+                height: 40px;
+            }
+
+            /* Manji margin za mobile */
+            main {
+                margin-top: 120px;
+            }
+            
+            header {
+                padding: 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">
+            <img src="logo/logo.jpg" alt="WebGalerija GM Logo">
+        </div>
+        <ul>
+            <li><a onclick="showSection('pocetna')">Početna</a></li>
+            <li><a onclick="showSection('galerija')">Galerija</a></li>
+            <li><a onclick="showSection('omeni')">O meni</a></li>
+            <li><a onclick="showSection('komentari')">Komentari</a></li>
+            <li><a onclick="showSection('kontakt')">Kontakt</a></li>
+        </ul>
+        <div class="language-switcher">
+            <img src="flags/hr.png" alt="HR" onclick="changeLanguage('hr')" class="active">
+            <img src="flags/en.png" alt="EN" onclick="changeLanguage('en')">
+            <img src="flags/de.png" alt="DE" onclick="changeLanguage('de')">
+        </div>
+    </nav>
+</header>
+
+<main>
+    <!-- POČETNA SA PARALLAX EFEKTIMA -->
+    <section id="pocetna" class="active">
+        <h1>Gabrijela Mamić</h1>
+        <p id="welcome-text">Ja sam Gabrijela Mamić, akademska slikarica koja kroz boje i oblike istražuje svijet oko sebe. Ova web galerija je prostor gdje možete zaroniti u moj kreativni univerzum – razgledati moje slike, osjetiti priču iza svakog poteza kista, a ako neko djelo probudi nešto u vama, možete ga učiniti dijelom svog prostora. Svaka slika nosi komadić moje duše. Pozivam vas da se zaustavite, osjetite i, ako želite, podijelite sa mnom svoje dojmove. Dobrodošli u moj svijet boja i emocija.</p>
+        
+        <!-- PARALLAX SEKCIJA 1 -->
+        <div class="parallax-section" style="background-image: url('images/slika1.jpg');">
+            <div class="parallax-overlay">
+                <h2>"Umjetnost je prozor u dušu"</h2>
+            </div>
+        </div>
+
+        <!-- SADRŽAJ IZMEĐU -->
+        <div class="content-section">
+            <h2>Moja kreativna vizija</h2>
+            <p>Svaka slika je putovanje - kroz boje, emocije i trenutke koji definiraju naš svijet. Kroz godine rada, razvila sam jedinstven stil koji kombinira klasične tehnike sa modernim pristupom.</p>
+        </div>
+
+        <!-- PARALLAX SEKCIJA 2 -->
+        <div class="parallax-section" style="background-image: url('images/slika3.jpg');">
+            <div class="parallax-overlay">
+                <h2>"Boje govore glasnije od riječi"</h2>
+            </div>
+        </div>
+
+        <!-- KALENDAR DOGAĐAJA -->
+        <div class="events-hero-section">
+            <div class="events-container">
+                <h2>Nadolazeći Događaji</h2>
+                <p class="events-subtitle">Posjetite moje izložbe i radionice</p>
+                
+                <div class="events-grid">
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="event-day">15</span>
+                            <span class="event-month">Pro</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Izložba "Boje Mediterana"</h3>
+                            <p class="event-location">Galerija Moderna, Zagreb</p>
+                            <p class="event-time">18:00 - 21:00</p>
+                            <button class="event-btn" onclick="addToCalendar(this)">Dodaj u kalendar</button>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="event-day">20</span>
+                            <span class="event-month">Sij</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Radionica "Akvarel tehnike"</h3>
+                            <p class="event-location">Studio GM, Split</p>
+                            <p class="event-time">10:00 - 16:00</p>
+                            <button class="event-btn" onclick="addToCalendar(this)">Dodaj u kalendar</button>
+                        </div>
+                    </div>
+
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="event-day">05</span>
+                            <span class="event-month">Vel</span>
+                        </div>
+                        <div class="event-content">
+                            <h3>Grupna izložba "Suvremeni pejzaži"</h3>
+                            <p class="event-location">Muzej suvremene umjetnosti, Dubrovnik</p>
+                            <p class="event-time">19:00 - 22:00</p>
+                            <button class="event-btn" onclick="addToCalendar(this)">Dodaj u kalendar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIDEO SEKCIJA -->
+        <div class="video-section">
+            <div class="video-overlay">
+                <h2>Proces stvaranja</h2>
+                <p>Zaronite u svijet gdje nastaju moja djela</p>
+            </div>
+            <!-- Kad imaš video, uncomment ovo:
+            <video autoplay muted loop playsinline>
+                <source src="videos/studio.mp4" type="video/mp4">
+            </video>
+            -->
+        </div>
+
+        <!-- SADRŽAJ IZMEĐU -->
+        <div class="content-section">
+            <h2>Inspiracija iz prirode</h2>
+            <p>Priroda je moja najveća inspiracija. Svaki zalazak sunca, šumski put, ili gradska svjetla postaju dio mog kreativnog procesa.</p>
+        </div>
+
+        <!-- PARALLAX SEKCIJA 3 -->
+        <div class="parallax-section" style="background-image: url('images/slika6.jpg');">
+            <div class="parallax-overlay">
+                <h2>"Svaki potez kista nosi priču"</h2>
+            </div>
+        </div>
+
+        <!-- FOOTER NA POČETNOJ STRANICI -->
+        <div class="homepage-footer">
+            <h3>Pratite me na društvenim mrežama</h3>
+            <div class="homepage-social-icons">
+                <a href="https://www.instagram.com/artg.ma/" target="_blank" title="Instagram">
+                    <img src="icons/instagram.png" alt="Instagram">
+                </a>
+                <a href="https://www.facebook.com/gabrijela.vucemil/" target="_blank" title="Facebook">
+                    <img src="icons/facebook.png" alt="Facebook">
+                </a>
+                <a href="https://www.pinterest.com/" target="_blank" title="Pinterest">
+                    <img src="icons/pinterest.png" alt="Pinterest">
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- GALERIJA -->
+    <section id="galerija">
+        <h2 id="gallery-title">Galerija</h2>
+        
+        <!-- TRAKA ZA PRETRAŽIVANJE -->
+        <div class="search-hero">
+            <div class="search-container">
+                <input type="text" id="search-input" placeholder="Pretraži galeriju...">
+                <button class="search-btn" onclick="performSearch()">Traži</button>
+            </div>
+            <div class="search-stats">
+                <span id="results-count">Pronađeno 6 slika</span>
+                <button class="clear-search" onclick="clearSearch()">Poništi</button>
+            </div>
+        </div>
+
+        <div class="gallery" id="gallery-container">
+            <!-- Galerija će biti generirana pomoću JavaScript-a -->
+        </div>
+    </section>
+
+    <!-- O MENI -->
+    <section id="omeni">
+        <h2 id="about-title">O meni</h2>
+        <p id="about-text">Zovem se Gabrijela Mamić i akademska sam slikarica sa strašću prema boji i formi. Moj umjetnički put započeo je iz duboke želje da vizualno izrazim emocije i priče koje nas okružuju. Svaka moja slika nastaje iz trenutka inspiracije, bilo da je to priroda, ljudi ili apstraktni koncept koji me zaokupi. Vjerujem da umjetnost ima moć povezivanja ljudi i buđenja emocija koje često ostaju neizbrojive riječima. Kroz moj rad, pozivam vas da zaronite u svjetove boja, gdje svaki potez kista nosi priču i emociju.</p>
+    </section>
+
+    <!-- KOMENTARI -->
+    <section id="komentari">
+        <h2 id="comments-title">Komentari</h2>
+        <div class="comment-section">
+            <!-- NETLIFY FORM ZA KOMENTARE -->
+            <form name="komentari" netlify netlify-honeypot="bot-field" class="comment-form">
+                <input type="hidden" name="form-name" value="komentari">
+                <p class="hidden">
+                    <label>Ne popunjavaj ovo: <input name="bot-field"></label>
+                </p>
+                
+                <h3 id="leave-comment">Ostavite komentar</h3>
+                <input type="text" name="ime" placeholder="Vaše ime" required>
+                <textarea name="komentar" rows="4" placeholder="Vaš komentar" required></textarea>
+                <button type="submit">Pošalji</button>
+            </form>
+            <div class="comment-box" id="comment-box">
+                <div class="comment">
+                    <strong>Marko:</strong> Prekrasne slike! Volim kombinaciju boja.
+                </div>
+                <div class="comment">
+                    <strong>Ana:</strong> Gabrijela, tvoj rad je inspirativan. Sve pohvale!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- KONTAKT -->
+    <section id="kontakt">
+        <h2 id="contact-title">Kontakt</h2>
+        <div class="contact-info">
+            <p>Imate pitanja ili želite kupiti sliku?</p>
+            <p><strong>Email:</strong> gabrijela.mamic@email.com</p>
+            <p><strong>Telefon:</strong> +387 XX XXX XXX</p>
+            <div class="social-icons">
+                <a href="https://www.instagram.com/artg.ma/" target="_blank" title="Instagram">
+                    <img src="icons/instagram.png" alt="Instagram">
+                </a>
+                <a href="https://www.facebook.com/gabrijela.vucemil/" target="_blank" title="Facebook">
+                    <img src="icons/facebook.png" alt="Facebook">
+                </a>
+                <a href="https://www.pinterest.com/" target="_blank" title="Pinterest">
+                    <img src="icons/pinterest.png" alt="Pinterest">
+                </a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" class="lightbox">
+    <span class="close" onclick="closeLightbox()">&times;</span>
+    <div class="lightbox-wrapper">
+        <div class="lightbox-image-container">
+            <img class="lightbox-img" id="lightbox-img" src="" alt="Slika u punoj veličini">
+        </div>
+        <div class="lightbox-details">
+            <h2 id="lightbox-title">Naziv slike</h2>
+            
+            <div class="detail-row">
+                <div class="detail-label">Godina nastanka</div>
+                <div class="detail-value" id="lightbox-year">2024</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Tehnika</div>
+                <div class="detail-value" id="lightbox-technique">Ulje na platnu</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Dimenzije</div>
+                <div class="detail-value" id="lightbox-dimensions">50x70 cm</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Opis</div>
+                <div class="detail-value" id="lightbox-description">Opis slike...</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Status</div>
+                <div class="detail-value">
+                    <span class="status-badge" id="lightbox-status">Dostupno</span>
+                </div>
+            </div>
+
+            <div class="price-tag" id="lightbox-price">200 €</div>
+            
+            <button class="buy-btn" id="buy-btn" onclick="showPurchaseForm()">Kupi sliku</button>
+
+<!-- ZAMIJENI OVIM -->
+<div class="purchase-form" id="purchase-form">
+    <h3>Kupnja slike</h3>
+    <p>Za kupnju slike, molimo vas da ispunite našu online formu:</p>
+    
+    <a href="https://forms.gle/T3av2cq6N1J5PeRx7" 
+       target="_blank" 
+       class="buy-btn" 
+       style="display: block; text-align: center; text-decoration: none; margin-top: 20px;">
+       Otvori formu za narudžbu
+    </a>
+    
+    <p style="margin-top: 15px; font-size: 0.9em; color: #666;">
+        Otvorit će vam se nova stranica s formom za narudžbu.
+    </p>
+</div>
+
+<script>
+    // PODACI O SLIKAMA
+    const paintings = [
+        {
+            id: 1,
+            image: 'images/slika1.jpg',
+            title: 'Mediteranski zalazak',
+            year: 2023,
+            technique: 'Ulje na platnu',
+            dimensions: '60x80 cm',
+            price: 350,
+            status: 'available',
+            description: 'Inspirirana toplim mediteranskim večerima, ova slika hvata magiju trenutka kada sunce dodiruje horizont. Topli tonovi narančaste i crvene boje prožimaju se sa dubokim ljubičastim nijansama, stvarajući atmosferu mira i nostalgije.'
+        },
+        {
+            id: 2,
+            image: 'images/slika2.jpg',
+            title: 'Šumske tajne',
+            year: 2024,
+            technique: 'Akvarel na papiru',
+            dimensions: '40x50 cm',
+            price: 220,
+            status: 'available',
+            description: 'Prolazak kroz gustu šumu otkriva skrivene svjetove. Korištenje akvarela omogućava fluidan prijelaz između svjetla i sjene, dok zelene nijanse stvaraju osjećaj svježine i misterije koja se krije u prirodi.'
+        },
+        {
+            id: 3,
+            image: 'images/slika3.jpg',
+            title: 'Gradski puls',
+            year: 2024,
+            technique: 'Akril na platnu',
+            dimensions: '70x100 cm',
+            price: 480,
+            status: 'reserved',
+            description: 'Dinamika modernog života uhvaćena kroz smjele poteze i kontrastne boje. Slika odražava energiju gradskih ulica, užurbanost ljudi i svjetla koja nikad ne spavaju. Apstraktni pristup omogućava svakom promatraču vlastitu interpretaciju urbanog života.'
+        },
+        {
+            id: 4,
+            image: 'images/slika4.jpg',
+            title: 'Spokojstvo plavog',
+            year: 2023,
+            technique: 'Ulje na platnu',
+            dimensions: '50x70 cm',
+            price: 290,
+            status: 'available',
+            description: 'Uronjavanje u dubine oceana inspiriralo je ovu kompoziciju. Različite nijanse plave boje stvaraju osjećaj dubine i beskonačnosti, dok sublimni detalji pozivaju na meditativno promatranje i opuštanje.'
+        },
+        {
+            id: 5,
+            image: 'images/slika5.jpg',
+            title: 'Zlatna jesen',
+            year: 2022,
+            technique: 'Mješovita tehnika',
+            dimensions: '55x75 cm',
+            price: 410,
+            status: 'sold',
+            description: 'Jesenska paleta boja oživljava na platnu kroz kombinaciju različitih tehnika. Zlatno-smeđe nijanse, dodaci teksture i sitni detalji lišća stvaraju bogatu površinu koja se mijenja ovisno o osvjetljenju.'
+        },
+        {
+            id: 6,
+            image: 'images/slika6.jpg',
+            title: 'Apstraktna harmonija',
+            year: 2024,
+            technique: 'Akril na platnu',
+            dimensions: '80x120 cm',
+            price: 650,
+            status: 'available',
+            description: 'Najveće djelo u kolekciji, predstavlja potpunu slobodu izražavanja. Geometrijski oblici se isprepliću sa organskim linijama, dok živahne boje stvaraju vizualnu simfoniju. Svaki element doprinosi cjelini, ali može biti promatran i samostalno.'
+        }
+    ];
+
+    let currentPainting = null;
+
+    // HEADER - VIDLJIV SAMO NA VRHU STRANICE
+    document.addEventListener('DOMContentLoaded', function() {
+        let lastScrollTop = 0;
+        const header = document.querySelector('header');
+        
+        // Na početku provjeri poziciju
+        checkHeaderVisibility();
+        
+        window.addEventListener('scroll', function() {
+            checkHeaderVisibility();
+        }, { passive: true });
+        
+        function checkHeaderVisibility() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Ako smo na VRHU stranice - pokaži header
+            if (scrollTop === 0) {
+                header.classList.remove('hidden');
+            } 
+            // Ako smo BILO GDJE DRUGDJE - sakrij header
+            else {
+                header.classList.add('hidden');
+            }
+            
+            lastScrollTop = scrollTop;
+        }
+    });
+
+    // Generiraj galeriju
+    function generateGallery() {
+        const container = document.getElementById('gallery-container');
+        container.innerHTML = '';
+        
+        paintings.forEach(painting => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.onclick = () => openLightbox(painting.id);
+            
+            item.innerHTML = `
+                <img src="${painting.image}" alt="${painting.title}">
+                <div class="gallery-item-overlay">
+                    <h3>${painting.title}</h3>
+                    <p>${painting.year} • ${painting.price} €</p>
+                </div>
+            `;
+            
+            container.appendChild(item);
+        });
+    }
+
+    // NAVIGACIJA
+    function showSection(sectionId) {
+        const sections = document.querySelectorAll('section');
+        sections.forEach(section => section.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+        
+        // Scrollaj na vrh sekcije
+        window.scrollTo(0, 0);
+    }
+
+    // TRAKA ZA PRETRAŽIVANJE - NOVA FUNKCIONALNOST
+    function performSearch() {
+        const searchTerm = document.getElementById('search-input').value.toLowerCase();
+        
+        if (!searchTerm) {
+            generateGallery(); // Pokaži sve slike ako nema pretrage
+            document.getElementById('results-count').textContent = 'Pronađeno 6 slika';
+            return;
+        }
+        
+        const filteredPaintings = paintings.filter(painting => {
+            return painting.title.toLowerCase().includes(searchTerm) ||
+                   painting.technique.toLowerCase().includes(searchTerm) ||
+                   painting.description.toLowerCase().includes(searchTerm);
+        });
+        
+        // Prikaz filtriranih slika
+        const container = document.getElementById('gallery-container');
+        container.innerHTML = '';
+        
+        filteredPaintings.forEach(painting => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.onclick = () => openLightbox(painting.id);
+            
+            item.innerHTML = `
+                <img src="${painting.image}" alt="${painting.title}">
+                <div class="gallery-item-overlay">
+                    <h3>${painting.title}</h3>
+                    <p>${painting.year} • ${painting.price} €</p>
+                </div>
+            `;
+            
+            container.appendChild(item);
+        });
+        
+        document.getElementById('results-count').textContent = `Pronađeno ${filteredPaintings.length} slika`;
+    }
+
+    function clearSearch() {
+        document.getElementById('search-input').value = '';
+        generateGallery();
+        document.getElementById('results-count').textContent = 'Pronađeno 6 slika';
+    }
+
+    // KALENDAR - NOVA FUNKCIONALNOST
+    function addToCalendar(button) {
+        const eventCard = button.closest('.event-card');
+        const title = eventCard.querySelector('h3').textContent;
+        alert(`Događaj "${title}" dodan u kalendar!`);
+    }
+
+    // LIGHTBOX
+    function openLightbox(paintingId) {
+        currentPainting = paintings.find(p => p.id === paintingId);
+        if (!currentPainting) return;
+
+        document.getElementById('lightbox').classList.add('active');
+        document.getElementById('lightbox-img').src = currentPainting.image;
+        document.getElementById('lightbox-title').textContent = currentPainting.title;
+        document.getElementById('lightbox-year').textContent = currentPainting.year;
+        document.getElementById('lightbox-technique').textContent = currentPainting.technique;
+        document.getElementById('lightbox-dimensions').textContent = currentPainting.dimensions;
+        document.getElementById('lightbox-description').textContent = currentPainting.description;
+        document.getElementById('lightbox-price').textContent = `${currentPainting.price} €`;
+        
+        // Status
+        const statusElement = document.getElementById('lightbox-status');
+        const buyBtn = document.getElementById('buy-btn');
+        
+        switch(currentPainting.status) {
+            case 'available':
+                statusElement.textContent = 'Dostupno';
+                statusElement.className = 'status-badge status-available';
+                buyBtn.disabled = false;
+                buyBtn.textContent = 'Kupi sliku';
+                break;
+            case 'sold':
+                statusElement.textContent = 'Prodano';
+                statusElement.className = 'status-badge status-sold';
+                buyBtn.disabled = true;
+                buyBtn.textContent = 'Nije dostupno';
+                break;
+            case 'reserved':
+                statusElement.textContent = 'Rezervirano';
+                statusElement.className = 'status-badge status-reserved';
+                buyBtn.disabled = true;
+                buyBtn.textContent = 'Rezervirano';
+                break;
+        }
+        
+        document.getElementById('purchase-form').classList.remove('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    function showPurchaseForm() {
+        if (currentPainting && currentPainting.status === 'available') {
+            document.getElementById('purchase-form').classList.add('active');
+        }
+    }
+
+    // PREVODI
+    const translations = {
+        hr: {
+            welcome: "Ja sam Gabrijela Mamić, akademska slikarica koja kroz boje i oblike istražuje svijet oko sebe. Ova web galerija je prostor gdje možete zaroniti u moj kreativni univerzum – razgledati moje slike, osjetiti priču iza svakog poteza kista, a ako neko djelo probudi nešto u vama, možete ga učiniti dijelom svog prostora. Svaka slika nosi komadić moje duše. Pozivam vas da se zaustavite, osjetite i, ako želite, podijelite sa mnom svoje dojmove. Dobrodošli u moj svijet boja i emocija.",
+            gallery: "Galerija",
+            about: "O meni",
+            aboutText: "Zovem se Gabrijela Mamić i akademska sam slikarica sa strašću prema boji i formi. Moj umjetnički put započeo je iz duboke želje da vizualno izrazim emocije i priče koje nas okružuju. Svaka moja slika nastaje iz trenutka inspiracije, bilo da je to priroda, ljudi ili apstraktni koncept koji me zaokupi. Vjerujem da umjetnost ima moć povezivanja ljudi i buđenja emocija koje često ostaju neizbrojive riječima. Kroz moj rad, pozivam vas da zaronite u svjetove boja, gdje svaki potez kista nosi priču i emociju.",
+            comments: "Komentari",
+            contact: "Kontakt"
+        },
+        en: {
+            welcome: "I am Gabrijela Mamić, an academic painter who explores the world around me through colors and shapes. This web gallery is a space where you can immerse yourself in my creative universe – view my paintings, feel the story behind each brushstroke, and if a piece awakens something within you, you can make it part of your space. Each painting carries a piece of my soul. I invite you to pause, feel, and if you wish, share your impressions with me. Welcome to my world of colors and emotions.",
+            gallery: "Gallery",
+            about: "About Me",
+            aboutText: "My name is Gabrijela Mamić and I am an academic painter with a passion for color and form. My artistic journey began from a deep desire to visually express the emotions and stories that surround us. Each of my paintings emerges from a moment of inspiration, whether it's nature, people, or an abstract concept that captivates me. I believe that art has the power to connect people and awaken emotions that often remain countless in words. Through my work, I invite you to dive into worlds of color, where every brushstroke carries a story and emotion.",
+            comments: "Comments",
+            contact: "Contact"
+        },
+        de: {
+            welcome: "Ich bin Gabrijela Mamić, eine akademische Malerin, die durch Farben und Formen die Welt um mich herum erforscht. Diese Web-Galerie ist ein Raum, in dem Sie in mein kreatives Universum eintauchen können – meine Gemälde betrachten, die Geschichte hinter jedem Pinselstrich spüren, und wenn ein Werk etwas in Ihnen weckt, können Sie es zu einem Teil Ihres Raumes machen. Jedes Gemälde trägt ein Stück meiner Seele. Ich lade Sie ein, innezuhalten, zu fühlen und, wenn Sie möchten, Ihre Eindrücke mit mir zu teilen. Willkommen in meiner Welt der Farben und Emotionen.",
+            gallery: "Galerie",
+            about: "Über mich",
+            aboutText: "Mein Name ist Gabrijela Mamić und ich bin eine akademische Malerin mit einer Leidenschaft für Farbe und Form. Meine künstlerische Reise begann aus dem tiefen Wunsch heraus, die Emotionen und Geschichten, die uns umgeben, visuell auszudrücken. Jedes meiner Gemälde entsteht aus einem Moment der Inspiration, sei es die Natur, Menschen oder ein abstraktes Konzept, das mich fesselt. Ich glaube, dass Kunst die Macht hat, Menschen zu verbinden und Emotionen zu wecken, die oft in Worten unzählbar bleiben. Durch meine Arbeit lade ich Sie ein, in Welten der Farben einzutauchen, wo jeder Pinselstrich eine Geschichte und Emotion trägt.",
+            comments: "Kommentare",
+            contact: "Kontakt"
+        }
+    };
+
+    function changeLanguage(lang) {
+        document.querySelectorAll('.language-switcher img').forEach(img => {
+            img.classList.remove('active');
+        });
+        event.target.classList.add('active');
+
+        document.getElementById('welcome-text').textContent = translations[lang].welcome;
+        document.getElementById('gallery-title').textContent = translations[lang].gallery;
+        document.getElementById('about-title').textContent = translations[lang].about;
+        document.getElementById('about-text').textContent = translations[lang].aboutText;
+        document.getElementById('comments-title').textContent = translations[lang].comments;
+        document.getElementById('contact-title').textContent = translations[lang].contact;
+    }
+
+    // AUTOMATSKA PRETRAGA KAD KORISNIK KUCA
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('search-input').addEventListener('input', performSearch);
+    });
+
+    // Zatvori lightbox sa ESC tipkom
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeLightbox();
+    });
+
+    // Inicijaliziraj galeriju
+    generateGallery();
+</script>
+
+</body>
+</html>
